@@ -1,0 +1,41 @@
+name: carteira-ibovespa
+
+services:
+  mongo:
+    image: mongo:8
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:?defina MONGO_USER no .env}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:?defina MONGO_PASSWORD no .env}
+    ports:
+      - "127.0.0.1:27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  postgres:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?defina POSTGRES_USER no .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?defina POSTGRES_PASSWORD no .env}
+      POSTGRES_DB: ${POSTGRES_DB:?defina POSTGRES_DB no .env}
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  mongo_data:
+  pg_data:
