@@ -1,3 +1,4 @@
-import logging.config
+"""Pipeline da carteira do Ibovespa: B3 -> MongoDB -> Postgres.
 
-logging.config.fileConfig("logs.conf")
+Os executáveis ficam em src/pipelines. Veja o README para o fluxo completo.
+"""

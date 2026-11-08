@@ -1,6 +1,6 @@
-"""Coleta a carteira do dia do Ibovespa na B3 e grava a resposta bruta no MongoDB.
+"""Etapa 1: coleta a carteira do dia do Ibovespa na B3 e grava a resposta bruta no MongoDB.
 
-Uso, na raiz do projeto:  python -m src.collect
+Uso, na raiz do projeto:  python -m src.pipelines.collect
 """
 
 import hashlib
@@ -8,7 +8,9 @@ import json
 import logging
 from datetime import datetime, timezone
 
-from src import b3, config, mongo
+from src import config
+from src.sources import b3
+from src.storage import mongo
 
 log = logging.getLogger(__name__)
 
@@ -25,7 +27,7 @@ def content_hash(payloads: list[dict]) -> str:
 def build_document(payloads: list[dict], params: dict, collected_at: datetime) -> dict:
     # O coletor não interpreta o JSON da B3: guarda a resposta intacta em "payloads" e só
     # acrescenta o que ele sabe com certeza (o que foi pedido, quando e o hash).
-    # Data de vigência e validação ficam para a etapa MongoDB -> Postgres (src/transform.py).
+    # Data de vigência e validação ficam para a etapa 2 (src/transform/portfolio.py).
     return {
         "index": params["index"],
         "segment": params["segment"],
@@ -34,11 +36,15 @@ def build_document(payloads: list[dict], params: dict, collected_at: datetime) -
         "request_params": params,
         "content_hash": content_hash(payloads),
         "payloads": payloads,  # respostas da API sem alterações, uma por página
+        # Controle da etapa MongoDB -> Postgres. Documentos antigos podem não ter
+        # processing_error; no Mongo, {campo: null} também encontra campo ausente.
         "processed_at": None,
+        "processing_error": None,
     }
 
 
 def main() -> int:
+    config.setup_logging()
     try:
         collected_at = datetime.now(timezone.utc)
         params = b3.request_params(INDEX, SEGMENT, PAGE_SIZE)

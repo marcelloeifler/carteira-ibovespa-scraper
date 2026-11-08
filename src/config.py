@@ -1,5 +1,6 @@
-"""Configurações lidas do .env na raiz do projeto."""
+"""Configurações do projeto: variáveis do .env e log."""
 
+import logging.config
 import os
 from dataclasses import dataclass
 from pathlib import Path
@@ -8,6 +9,12 @@ from dotenv import load_dotenv
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(ROOT_DIR / ".env")
+
+
+def setup_logging() -> None:
+    """Aplica o logs.conf da raiz do projeto. Cada pipeline chama isto ao iniciar."""
+    # disable_existing_loggers=False: mantém os loggers dos módulos já importados.
+    logging.config.fileConfig(ROOT_DIR / "logs.conf", disable_existing_loggers=False)
 
 _TRUE = {"1", "true", "yes", "sim", "on"}
 _FALSE = {"0", "false", "no", "nao", "não", "off"}
