@@ -1,0 +1,10 @@
+[project]
+name = "carteira-ibovespa-scraper"
+version = "0.1.0"
+description = "Scraper da carteira do Ibovespa"
+readme = "README.md"
+requires-python = ">=3.14,<4.0"
+dependencies = ["requests (>=2.34.2,<3.0.0)", "pymongo (>=4.19.0,<5.0.0)", "python-dotenv (>=1.2.4,<2.0.0)"]
+
+[tool.poetry]
+package-mode = false
