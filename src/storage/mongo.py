@@ -24,7 +24,8 @@ def get_client(settings: MongoSettings) -> MongoClient:
 def ensure_indexes(collection: Collection) -> None:
     collection.create_index("content_hash", unique=True, name="uniq_content_hash")
     collection.create_index(
-        [("index", ASCENDING), ("collected_at", ASCENDING)], name="index_collected_at"
+        [("request_params.index", ASCENDING), ("collected_at", ASCENDING)],
+        name="request_index_collected_at",
     )
 
 

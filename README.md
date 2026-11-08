@@ -63,12 +63,10 @@ Banco `carteira_ibovespa` (configurável em `MONGO_DB`), coleção `carteira_raw
 
 ```js
 {
-  index: "IBOV",
-  segment: "2",
   collected_at: ISODate("..."),   // primeira vez que este conteúdo foi coletado
   last_seen_at: ISODate("..."),   // última vez que este mesmo conteúdo foi visto
   source_url: "https://sistemaswebb3-listados.b3.com.br/indexProxy/indexCall/GetPortfolioDay/",
-  request_params: { language: "pt-br", pageSize: 120, index: "IBOV", segment: "2" },
+  request_params: { language: "pt-br", pageSize: 120, index: "IBOV", segment: "2" },  // o que foi pedido à B3
   content_hash: "sha256...",      // índice único: o mesmo conteúdo nunca é gravado duas vezes
   payloads: [ { page: {...}, header: {...}, results: [...] } ],  // resposta da B3, uma por página
   processed_at: null,             // preenchido pela etapa 2 após gravar no Postgres

@@ -29,8 +29,6 @@ def build_document(payloads: list[dict], params: dict, collected_at: datetime) -
     # acrescenta o que ele sabe com certeza (o que foi pedido, quando e o hash).
     # Data de vigência e validação ficam para a etapa 2 (src/transform/portfolio.py).
     return {
-        "index": params["index"],
-        "segment": params["segment"],
         "collected_at": collected_at,
         "source_url": b3.BASE_URL,
         "request_params": params,
